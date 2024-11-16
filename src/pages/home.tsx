@@ -5,6 +5,7 @@ import { ProductCard } from '@/components/product-card';
 import { Loader2 } from 'lucide-react';
 import { CartButton } from '@/components/cart-button';
 import { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function HomePage() {
   const { ref, inView } = useInView();
@@ -40,7 +41,9 @@ export default function HomePage() {
     <div className='min-h-screen bg-background mx-auto max-w-6xl'>
       <header className='border-b sticky top-0 bg-background z-10'>
         <div className='container mx-auto py-4 flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>Furniture Ecom</h1>
+          <Link to={'/'} className='text-2xl font-bold'>
+            Furniture Ecom
+          </Link>
           <CartButton />
         </div>
       </header>

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
-import { getProduct, getRelatedProducts } from '@/lib/api';
+import { Link, useParams } from 'react-router-dom';
+import { getProduct, getRelatedProducts, Product } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Loader2, ShoppingCart } from 'lucide-react';
@@ -33,7 +33,9 @@ export default function ProductPage() {
     <div className='min-h-screen bg-background'>
       <header className='border-b'>
         <div className='container mx-auto py-4 flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>Modern Furniture</h1>
+          <Link to={'/'} className='text-2xl font-bold'>
+            Furniture Ecom
+          </Link>
           <CartButton />
         </div>
       </header>
@@ -43,7 +45,7 @@ export default function ProductPage() {
             <img
               src={product.image_path}
               alt={product.name}
-              className='w-full h-full object-cover rounded-lg'
+              className='w-full h-full object-cover rounded-sm'
             />
           </div>
           <div className='space-y-6'>
@@ -94,7 +96,7 @@ export default function ProductPage() {
           <div className='mt-16'>
             <h2 className='text-2xl font-bold mb-6'>Related Products</h2>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-              {relatedProducts.map((product) => (
+              {relatedProducts.map((product: Product) => (
                 <ProductCard key={product.sku} product={product} />
               ))}
             </div>
