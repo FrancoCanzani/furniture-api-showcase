@@ -1,84 +1,99 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { getProduct, getRelatedProducts } from "@/lib/api";
-import { ProductCard } from "@/components/product-card";
-import { Button } from "@/components/ui/button";
-import { Loader2, ShoppingCart } from "lucide-react";
-import { addToCart } from "@/lib/store";
-import { CartButton } from "@/components/cart-button";
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { getProduct, getRelatedProducts } from '@/lib/api';
+import { ProductCard } from '@/components/product-card';
+import { Button } from '@/components/ui/button';
+import { Loader2, ShoppingCart } from 'lucide-react';
+import { addToCart } from '@/lib/store';
+import { CartButton } from '@/components/cart-button';
 
-export function ProductPage() {
+export default function ProductPage() {
   const { sku } = useParams<{ sku: string }>();
 
   const { data: product, isLoading } = useQuery({
-    queryKey: ["product", sku],
+    queryKey: ['product', sku],
     queryFn: () => getProduct(sku!),
   });
 
   const { data: relatedProducts } = useQuery({
-    queryKey: ["related-products", product?.category],
+    queryKey: ['related-products', product?.category],
     queryFn: () => getRelatedProducts(product!.category, product!.sku),
     enabled: !!product,
   });
 
   if (isLoading || !product) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className='flex items-center justify-center min-h-screen'>
+        <Loader2 className='h-8 w-8 animate-spin' />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Modern Furniture</h1>
+    <div className='min-h-screen bg-background'>
+      <header className='border-b'>
+        <div className='container mx-auto py-4 flex justify-between items-center'>
+          <h1 className='text-2xl font-bold'>Modern Furniture</h1>
           <CartButton />
         </div>
       </header>
-      <main className="container mx-auto py-8">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="aspect-square">
+      <main className='container mx-auto py-8'>
+        <div className='grid md:grid-cols-2 gap-8'>
+          <div className='aspect-square'>
             <img
               src={product.image_path}
               alt={product.name}
-              className="w-full h-full object-cover rounded-lg"
+              className='w-full h-full object-cover rounded-lg'
             />
           </div>
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold">{product.name}</h1>
-            <p className="text-lg text-muted-foreground">{product.description}</p>
-            <div className="space-y-2">
-              <p><span className="font-medium">Wood Type:</span> {product.wood_type}</p>
-              <p><span className="font-medium">Finish:</span> {product.finish}</p>
-              <p><span className="font-medium">Dimensions:</span> {product.dimensions.width}W x {product.dimensions.depth}D x {product.dimensions.height}H inches</p>
+          <div className='space-y-6'>
+            <h1 className='text-3xl font-bold'>{product.name}</h1>
+            <p className='text-lg text-muted-foreground'>
+              {product.description}
+            </p>
+            <div className='space-y-2'>
+              <p>
+                <span className='font-medium'>Wood Type:</span>{' '}
+                {product.wood_type}
+              </p>
+              <p>
+                <span className='font-medium'>Finish:</span> {product.finish}
+              </p>
+              <p>
+                <span className='font-medium'>Dimensions:</span>{' '}
+                {product.dimensions.width}W x {product.dimensions.depth}D x{' '}
+                {product.dimensions.height}H inches
+              </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className='flex items-center gap-4'>
               {product.discount_price ? (
                 <>
-                  <span className="text-2xl font-bold">${product.discount_price}</span>
-                  <span className="text-lg text-muted-foreground line-through">${product.price}</span>
+                  <span className='text-2xl font-bold'>
+                    ${product.discount_price}
+                  </span>
+                  <span className='text-lg text-muted-foreground line-through'>
+                    ${product.price}
+                  </span>
                 </>
               ) : (
-                <span className="text-2xl font-bold">${product.price}</span>
+                <span className='text-2xl font-bold'>${product.price}</span>
               )}
             </div>
             <Button
-              size="lg"
-              className="w-full"
+              size='lg'
+              className='w-full'
               onClick={() => addToCart(product)}
             >
-              <ShoppingCart className="mr-2 h-5 w-5" />
+              <ShoppingCart className='mr-2 h-5 w-5' />
               Add to Cart
             </Button>
           </div>
         </div>
 
         {relatedProducts && relatedProducts.length > 0 && (
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">Related Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className='mt-16'>
+            <h2 className='text-2xl font-bold mb-6'>Related Products</h2>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
               {relatedProducts.map((product) => (
                 <ProductCard key={product.sku} product={product} />
               ))}
