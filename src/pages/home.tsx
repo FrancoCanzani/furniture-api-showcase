@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react';
 import { getProducts, ProductsResponse } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Loader2 } from 'lucide-react';
-import { CartButton } from '@/components/cart-button';
 import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import Header from '@/components/header';
 
 export default function HomePage() {
   const { ref, inView } = useInView();
@@ -16,8 +15,6 @@ export default function HomePage() {
   const fetchProducts = useCallback(async () => {
     const products = await getProducts(limitParam);
     setProducts(products);
-    console.log(products);
-    console.log(limitParam);
     setIsFetching(false);
   }, [limitParam]);
 
@@ -38,15 +35,8 @@ export default function HomePage() {
   }
 
   return (
-    <div className='min-h-screen bg-background mx-auto max-w-6xl'>
-      <header className='border-b sticky top-0 bg-background z-10'>
-        <div className='container mx-auto py-4 flex justify-between items-center'>
-          <Link to={'/'} className='text-2xl font-bold'>
-            Furniture Ecom
-          </Link>
-          <CartButton />
-        </div>
-      </header>
+    <div className='min-h-screen bg-background mx-auto'>
+      <Header />
       <main className='container mx-auto py-8'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
           {products?.data.map((product) => (

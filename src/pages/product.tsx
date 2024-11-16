@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getProduct, getRelatedProducts, Product } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Loader2, ShoppingCart } from 'lucide-react';
-import { addToCart } from '@/lib/store';
-import { CartButton } from '@/components/cart-button';
+import Header from '@/components/header';
+import { useCart } from '@/lib/cart-provider';
 
 export default function ProductPage() {
   const { sku } = useParams<{ sku: string }>();
+  const { addItem } = useCart();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', sku],
@@ -31,14 +32,7 @@ export default function ProductPage() {
 
   return (
     <div className='min-h-screen bg-background'>
-      <header className='border-b'>
-        <div className='container mx-auto py-4 flex justify-between items-center'>
-          <Link to={'/'} className='text-2xl font-bold'>
-            Furniture Ecom
-          </Link>
-          <CartButton />
-        </div>
-      </header>
+      <Header />
       <main className='container mx-auto py-8'>
         <div className='grid md:grid-cols-2 gap-8'>
           <div className='aspect-square'>
@@ -67,24 +61,11 @@ export default function ProductPage() {
                 {product.dimensions.height}H inches
               </p>
             </div>
-            <div className='flex items-center gap-4'>
-              {product.discount_price ? (
-                <>
-                  <span className='text-2xl font-bold'>
-                    ${product.discount_price}
-                  </span>
-                  <span className='text-lg text-muted-foreground line-through'>
-                    ${product.price}
-                  </span>
-                </>
-              ) : (
-                <span className='text-2xl font-bold'>${product.price}</span>
-              )}
-            </div>
+            <div className='flex items-center gap-4'>{product.price}</div>
             <Button
               size='lg'
               className='w-full'
-              onClick={() => addToCart(product)}
+              onClick={() => addItem(product)}
             >
               <ShoppingCart className='mr-2 h-5 w-5' />
               Add to Cart
