@@ -45,7 +45,7 @@ export async function getProducts({
   limit,
   offset = 0,
   name,
-  sort = 'name_asc',
+  sort = 'newest',
 }: GetProductsParams): Promise<ProductsResponse> {
   try {
     const abortController = new AbortController();

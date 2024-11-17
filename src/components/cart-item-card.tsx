@@ -1,6 +1,6 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
-import { CartItem } from '@/hooks/use-local-storage-cart';
+import { CartItem } from '@/lib/cart-provider';
 
 export default function CartItemCard({
   item,
