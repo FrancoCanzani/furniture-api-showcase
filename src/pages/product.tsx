@@ -31,7 +31,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className='min-h-screen bg-background'>
+    <div className='min-h-screen'>
       <Header />
       <main className='container mx-auto py-8'>
         <div className='grid md:grid-cols-2 gap-8'>

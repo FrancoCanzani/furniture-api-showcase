@@ -16,7 +16,7 @@ export function CartSheet() {
     useCart();
 
   const handleCheckout = async () => {
-    // Implement your checkout logic here
+    // checkout logic here
     console.log('Proceeding to checkout with items:', items);
   };
 
@@ -24,7 +24,7 @@ export function CartSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant='outline' size='icon' className='relative'>
-          <ShoppingCart className='h-5 w-5' />
+          <ShoppingCart size={19} />
           {totalItems > 0 && (
             <div className='absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center'>
               {totalItems}
