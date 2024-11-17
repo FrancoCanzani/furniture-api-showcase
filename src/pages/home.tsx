@@ -22,14 +22,9 @@ export default function HomePage() {
       setIsFetching(true);
       const response = await getProducts({ limit: LIMIT, offset });
 
-      // Only add new products, don't include the existing ones
       setProducts((prevProducts) => {
-        // Create a Set of existing IDs for quick lookup
         const existingIds = new Set(prevProducts.map((p) => p.id));
-
-        // Filter out any products that already exist
         const newProducts = response.data.filter((p) => !existingIds.has(p.id));
-
         return [...prevProducts, ...newProducts];
       });
 
@@ -40,17 +35,18 @@ export default function HomePage() {
     } finally {
       setIsFetching(false);
     }
-  }, [offset, isFetching, hasMore]);
+  }, [offset]);
 
   useEffect(() => {
     fetchProducts();
-  }, [offset, fetchProducts]);
+  }, [fetchProducts]);
 
   useEffect(() => {
-    if (inView && hasMore && !isFetching) {
+    const shouldFetch = inView && hasMore && !isFetching;
+    if (shouldFetch) {
       setOffset((prev) => prev + LIMIT);
     }
-  }, [inView, hasMore, isFetching]);
+  }, [inView]);
 
   const isInitialLoading = !products.length && isFetching;
 
