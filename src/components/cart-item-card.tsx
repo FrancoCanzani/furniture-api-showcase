@@ -53,7 +53,7 @@ export default function CartItemCard({
               <Plus className='h-4 w-4' />
             </Button>
           </div>
-          <p className='font-medium'>{item.price}</p>
+          <p className='font-medium'>${item.price}</p>
         </div>
       </div>
     </div>

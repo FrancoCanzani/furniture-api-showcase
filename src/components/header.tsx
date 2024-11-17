@@ -47,11 +47,11 @@ export default function Header({ hasSearch }: { hasSearch?: boolean }) {
 
   return (
     <header className='border-b sticky top-0 bg-background z-10'>
-      <div className='container mx-auto py-4 flex justify-between items-center'>
-        <Link to={'/'} className='text-2xl font-bold'>
+      <div className='container flex-col md:flex-row space-y-4 md:space-y-0 mx-auto py-4 flex justify-between items-center w-full'>
+        <Link to={'/'} className='text-2xl font-bold w-full text-start'>
           Furniture Ecom
         </Link>
-        <div className='flex items-center justify-end space-x-2'>
+        <div className='flex items-center justify-end space-x-2 w-full'>
           {hasSearch ? (
             <>
               <Select
@@ -77,7 +77,7 @@ export default function Header({ hasSearch }: { hasSearch?: boolean }) {
                 </SelectContent>
               </Select>
 
-              <div className='relative w-[300px]'>
+              <div className='relative md:w-[300px]'>
                 <Input
                   autoFocus
                   value={searchValue}

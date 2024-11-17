@@ -59,7 +59,7 @@ export function CartSheet() {
             <div className='border-t pt-4 mt-4 space-y-4'>
               <div className='flex justify-between'>
                 <span className='font-medium'>Total</span>
-                <span className='font-medium'>{totalPrice}</span>
+                <span className='font-medium'>{totalPrice.toFixed(2)}</span>
               </div>
 
               <Button className='w-full' size='lg' onClick={handleCheckout}>
