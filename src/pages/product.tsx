@@ -61,7 +61,7 @@ export default function ProductPage() {
                 {product.dimensions.height}H inches
               </p>
             </div>
-            <div className='flex items-center gap-4'>{product.price}</div>
+            <div className='flex items-center gap-4'>${product.price}</div>
             <Button
               size='lg'
               className='w-full'
