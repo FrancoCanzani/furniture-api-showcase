@@ -28,12 +28,24 @@ export interface ProductsResponse {
   count: number;
 }
 
-export async function getProducts(limit: number): Promise<ProductsResponse> {
+export async function getProducts(
+  limit: number,
+  name?: string
+): Promise<ProductsResponse> {
   try {
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), 5000);
 
-    const response = await fetch(`${baseURL}/products?limit=${limit}`, {
+    // Build URL with URLSearchParams to properly handle optional parameters
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+    });
+
+    if (name?.trim()) {
+      params.append('name', name.trim());
+    }
+
+    const response = await fetch(`${baseURL}/products?${params.toString()}`, {
       signal: abortController.signal,
       headers: {
         Accept: 'application/json',
