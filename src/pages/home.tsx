@@ -1,6 +1,6 @@
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { getProducts, ProductsResponse } from '@/lib/api';
+import { getProducts, Product } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Loader2 } from 'lucide-react';
 import { useCallback } from 'react';
@@ -8,25 +8,42 @@ import Header from '@/components/header';
 
 export default function HomePage() {
   const { ref, inView } = useInView();
-  const [products, setProducts] = useState<ProductsResponse | null>(null);
-  const [limitParam, setLimitParam] = useState(24);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [offset, setOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const LIMIT = 24;
 
   const fetchProducts = useCallback(async () => {
-    const products = await getProducts(limitParam);
-    setProducts(products);
-    setIsFetching(false);
-  }, [limitParam]);
+    if (isFetching || !hasMore) return;
+
+    try {
+      setIsFetching(true);
+      const response = await getProducts({ limit: LIMIT, offset });
+
+      setProducts((prev) => [...prev, ...response.data]);
+      setHasMore(response.count > offset + LIMIT);
+    } catch (err) {
+      setHasMore(false);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [offset, isFetching, hasMore]);
 
   useEffect(() => {
-    if (inView) {
-      setIsFetching(true);
-      setLimitParam(limitParam + 24);
-      fetchProducts();
-    }
-  }, [inView]);
+    fetchProducts();
+  }, [offset]);
 
-  if (status === 'pending') {
+  useEffect(() => {
+    if (inView && hasMore && !isFetching) {
+      setOffset((prev) => prev + LIMIT);
+    }
+  }, [inView, hasMore, isFetching]);
+
+  const isInitialLoading = !products.length && isFetching;
+
+  if (isInitialLoading) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
         <Loader2 className='h-8 w-8 animate-spin' />
@@ -39,13 +56,20 @@ export default function HomePage() {
       <Header />
       <main className='container mx-auto py-8'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-          {products?.data.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-        <div ref={ref} className='flex justify-center py-8'>
-          {isFetching && <Loader2 className='h-6 w-6 animate-spin' />}
-        </div>
+        {hasMore && (
+          <div ref={ref} className='flex justify-center py-8'>
+            {isFetching && <Loader2 className='h-6 w-6 animate-spin' />}
+          </div>
+        )}
+        {!hasMore && products.length > 0 && (
+          <p className='text-center text-muted-foreground py-8'>
+            No more products to load
+          </p>
+        )}
       </main>
     </div>
   );

@@ -8,49 +8,68 @@ import { ProductCard } from '@/components/product-card';
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: '100px',
+  });
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [limitParam, setLimitParam] = useState(24);
+  const [offset, setOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+  const LIMIT = 24;
 
   const fetchProducts = useCallback(async () => {
     if (isFetching || !hasMore) return;
 
     try {
       setIsFetching(true);
-
       const searchTerm = searchParams.get('name');
-      const response = await getProducts(limitParam, searchTerm ?? undefined);
+      const sortValue = searchParams.get('sort') || 'newest';
 
-      if (response.data.length > products.length) {
-        setProducts(response.data);
-        setHasMore(response.count > response.data.length);
-      } else {
-        setHasMore(false);
-      }
+      const response = await getProducts({
+        limit: LIMIT,
+        offset,
+        name: searchTerm ?? undefined,
+        sort: sortValue as
+          | 'price_asc'
+          | 'price_desc'
+          | 'name_asc'
+          | 'name_desc'
+          | 'newest'
+          | 'oldest',
+      });
+
+      setProducts((prev) => [...prev, ...response.data]);
+      setHasMore(response.count > offset + LIMIT);
     } catch (err) {
       setHasMore(false);
     } finally {
       setIsFetching(false);
     }
-  }, [limitParam, searchParams, products.length, isFetching, hasMore]);
+  }, [offset, searchParams, isFetching, hasMore]);
 
+  // Reset when search term or sort changes
   useEffect(() => {
     setProducts([]);
-    setLimitParam(24);
+    setOffset(0);
     setHasMore(true);
     fetchProducts();
-  }, [searchParams.get('name')]);
+  }, [searchParams.get('name'), searchParams.get('sort')]);
 
-  // Handle infinite scroll
+  // Fetch when offset changes
   useEffect(() => {
-    if (inView && hasMore && !isFetching) {
-      setLimitParam((prev) => prev + 24);
+    if (offset > 0) {
       fetchProducts();
     }
-  }, [inView, hasMore, isFetching, fetchProducts]);
+  }, [offset]);
+
+  useEffect(() => {
+    if (inView && hasMore && !isFetching) {
+      setOffset((prev) => prev + LIMIT);
+    }
+  }, [inView, hasMore, isFetching]);
 
   const searchTerm = searchParams.get('name');
   const isInitialLoading = !products.length && isFetching;

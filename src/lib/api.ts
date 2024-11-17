@@ -28,17 +28,33 @@ export interface ProductsResponse {
   count: number;
 }
 
-export async function getProducts(
-  limit: number,
-  name?: string
-): Promise<ProductsResponse> {
+interface GetProductsParams {
+  limit: number;
+  offset: number;
+  name?: string;
+  sort?:
+    | 'price_asc'
+    | 'price_desc'
+    | 'name_asc'
+    | 'name_desc'
+    | 'newest'
+    | 'oldest';
+}
+
+export async function getProducts({
+  limit,
+  offset = 0,
+  name,
+  sort = 'name_asc',
+}: GetProductsParams): Promise<ProductsResponse> {
   try {
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), 5000);
 
-    // Build URL with URLSearchParams to properly handle optional parameters
     const params = new URLSearchParams({
       limit: limit.toString(),
+      offset: offset.toString(),
+      sort,
     });
 
     if (name?.trim()) {
