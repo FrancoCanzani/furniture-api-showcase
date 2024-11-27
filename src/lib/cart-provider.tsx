@@ -9,6 +9,7 @@ import {
 
 export interface CartItem {
   id: string;
+  sku: string;
   name: string;
   price: number;
   image_path: string;

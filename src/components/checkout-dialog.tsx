@@ -22,7 +22,7 @@ export function CheckoutDialog({
       setIsProcessing(true);
 
       const updates = items.map((item) => ({
-        productSku: item.id,
+        productSku: item.sku,
         quantity: -item.quantity,
       }));
 
