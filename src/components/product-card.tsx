@@ -1,52 +1,48 @@
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Product } from '@/lib/api';
 import { useCart } from '@/lib/cart-provider';
+import { Button } from './ui/button';
+import { ChevronRight, ShoppingCart } from 'lucide-react';
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
 
   return (
-    <Card className='overflow-hidden group border-gray-200 shadow-none hover:shadow transition-shadow duration-300 rounded-sm'>
-      <Link to={`/product/${product.sku}`}>
-        <CardContent className='p-0'>
-          <div className='aspect-square relative'>
-            <div className='relative group overflow-hidden'>
-              {/* Main image container with hover effect */}
-              <div className='relative transition-transform duration-700 ease-out transform group-hover:scale-105'>
-                <img
-                  src={product.image_path}
-                  alt={product.name}
-                  className='object-cover w-full h-full'
-                />
-
-                {/* Warm overlay effect */}
-                <div className='absolute inset-0 bg-gradient-to-b from-amber-50 via-transparent to-orange-100 mix-blend-multiply' />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Link>
-      <CardFooter className='flex flex-col items-start gap-2 p-4'>
-        <Link to={`/product/${product.sku}`}>
-          <h3 className='font-semibold text-lg'>{product.name}</h3>
-          <p className='text-sm capitalize text-gray-500'>
-            {product.wood_type} wood, {product.finish} finish
-          </p>
-        </Link>
-        <div className='flex gap-2 items-center justify-between w-full'>
-          <span className='text-sm'>${product.price}</span>
-          <button
-            className='text-xs font-semibold hover:underline group-hover:opacity-100 opacity-0 transition-opacity duration-300'
+    <div className='group'>
+      <Link to={`/product/${product.sku}`} className='block'>
+        <div className='relative aspect-[4/5] overflow-hidden bg-neutral-100 mb-4'>
+          <img
+            src={product.image_path}
+            alt={product.name}
+            className='absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105'
+          />
+          <Button
+            variant='outline'
+            size='sm'
+            className='absolute bottom-4 right-4 bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300'
             onClick={(e) => {
               e.preventDefault();
               addItem(product);
             }}
           >
-            Add to cart
-          </button>
+            <ShoppingCart size={16} />
+          </Button>
         </div>
-      </CardFooter>
-    </Card>
+        <div className='space-y-1'>
+          <h3 className='font-light text-lg group-hover:underline'>
+            {product.name}
+          </h3>
+          <p className='text-sm text-neutral-500 capitalize'>
+            {product.wood_type} wood, {product.finish} finish
+          </p>
+          <div className='flex items-center justify-between pt-2'>
+            <span className='text-lg'>${product.price}</span>
+            <span className='text-sm flex items-center gap-1 group-hover:gap-2 transition-all'>
+              View Details <ChevronRight size={14} />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }

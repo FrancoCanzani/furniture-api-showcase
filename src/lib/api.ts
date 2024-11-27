@@ -39,6 +39,7 @@ interface GetProductsParams {
     | 'name_desc'
     | 'newest'
     | 'oldest';
+  featured?: boolean;
 }
 
 export async function getProducts({
@@ -46,6 +47,7 @@ export async function getProducts({
   offset = 0,
   name,
   sort = 'newest',
+  featured,
 }: GetProductsParams): Promise<ProductsResponse> {
   try {
     const abortController = new AbortController();
@@ -59,6 +61,10 @@ export async function getProducts({
 
     if (name?.trim()) {
       params.append('name', name.trim());
+    }
+
+    if (featured) {
+      params.append('featured', 'true');
     }
 
     const response = await fetch(`${baseURL}/products?${params.toString()}`, {
@@ -169,3 +175,35 @@ export const getRelatedProducts = async (
     throw new Error('An unexpected error occurred');
   }
 };
+
+export async function updateStock(
+  updates: { productSku: string; quantity: number }[]
+) {
+  try {
+    const response = await fetch(`${baseURL}/products/stock`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ updates }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to update stock');
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}

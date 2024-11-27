@@ -46,9 +46,9 @@ export default function Header({ hasSearch }: { hasSearch?: boolean }) {
   }, [searchValue]);
 
   return (
-    <header className='border-b sticky top-0 bg-background z-10'>
-      <div className='container flex-col md:flex-row space-y-4 md:space-y-0 mx-auto py-4 flex justify-between items-center w-full'>
-        <Link to={'/'} className='text-2xl font-bold w-full text-start'>
+    <header className='border-b sticky top-0 bg-white/80 z-10'>
+      <div className='container flex-col sm:flex-row space-y-4 sm:space-y-0 mx-auto py-4 flex justify-between items-center w-full'>
+        <Link to={'/'} className='text-2xl font-medium min-w-fit text-start'>
           Furniture Ecom
         </Link>
         <div className='flex items-center justify-end space-x-2 w-full'>
