@@ -195,10 +195,6 @@ export async function updateStock(
 
     const data = await response.json();
 
-    if (!data.success) {
-      throw new Error(data.error || 'Failed to update stock');
-    }
-
     return data;
   } catch (error) {
     if (error instanceof Error) {

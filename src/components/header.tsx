@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function Header({ hasSearch }: { hasSearch?: boolean }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,7 +48,12 @@ export default function Header({ hasSearch }: { hasSearch?: boolean }) {
 
   return (
     <header className='border-b sticky top-0 bg-white/80 z-10'>
-      <div className='container flex-col sm:flex-row space-y-4 sm:space-y-0 mx-auto py-4 flex justify-between items-center w-full'>
+      <div
+        className={cn(
+          'container sm:flex-row sm:space-y-0 mx-auto py-4 flex justify-between items-center w-full',
+          hasSearch && 'flex-col space-y-4'
+        )}
+      >
         <Link to={'/'} className='text-2xl font-medium min-w-fit text-start'>
           Furniture Ecom
         </Link>

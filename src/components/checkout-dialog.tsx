@@ -20,16 +20,17 @@ export function CheckoutDialog({
   const handleCheckout = async () => {
     try {
       setIsProcessing(true);
+      console.log('checkout initiated');
 
       const updates = items.map((item) => ({
         productSku: item.sku,
         quantity: -item.quantity,
       }));
 
-      await updateStock(updates);
+      const data = await updateStock(updates);
+      console.log(data);
 
       clearCart();
-
       toast.success('Order placed successfully!');
 
       confetti({
@@ -41,6 +42,7 @@ export function CheckoutDialog({
       onOpenChange(false);
     } catch (error) {
       toast.error('Failed to place order. Please try again.');
+      console.error(error);
     } finally {
       setIsProcessing(false);
     }
